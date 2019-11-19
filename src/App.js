@@ -14,7 +14,7 @@ function App() {
   // client.get("/getAllOrders").then(data => console.log(data));
   return (
     <Provider store={store}>
-      <Layout>
+      <Layout style={{ background: "#E5E5E5", minHeight: '100vh' }} className="layout" >
         <Sider
           width={250}
           style={{ background: "#E1E1E1", padding: 24 }}
@@ -34,7 +34,6 @@ function App() {
         </Sider>
         <Content
           style={{
-            background: "#E5E5E5",
             padding: 24,
             margin: 0,
             minHeight: 280
