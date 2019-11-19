@@ -78,7 +78,7 @@ class OrderHistory extends React.Component {
                 <div className="list-menu-cart">
                     <Table
                         className="table-cart"
-                        style = {{ width: '100%' }} 
+                        style={{ width: "100%", background: "#fff", padding: 8 }}
                         columns={columns} 
                         dataSource={data} 
                     />
