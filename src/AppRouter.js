@@ -6,9 +6,7 @@ import AppHistory from "AppHistory";
 const AppRouter = () => (
   <Router history={AppHistory}>
     <Switch>
-      <Route path="/">
-        <Products />
-      </Route>
+      <Route path="/">{Products}</Route>
     </Switch>
   </Router>
 );
