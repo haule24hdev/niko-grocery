@@ -1,10 +1,7 @@
 import React from 'react';
 import './orderHistory.scss';
 import { 
-    Input, 
     Table,
-    Typography,
-    Button,
     Layout,
 } from 'antd';
 
@@ -29,6 +26,7 @@ const columns = [{
         title: '',
         dataIndex: 'details',
         key: 'details',
+        render: () => <a>Details</a>
     }
 
 ]
@@ -36,37 +34,37 @@ const columns = [{
 const data = [{
         key: '1',
         customerName: 'Customer Name 1',
-        date: 50,
+        date: "2019-11-18",
         totalPrice: 50,
-        details: 2500
+        details: ''
     },
     {
         key: '1',
         customerName: 'Customer Name 1',
-        date: 50,
-        totalPrice: 50,
-        details: 2500
+        date: "2019-11-18",
+        totalPrice: 13,
+        details: ''
     },
     {
         key: '1',
         customerName: 'Customer Name 1',
-        date: 50,
-        totalPrice: 50,
-        details: 2500
+        date: "2019-11-18",
+        totalPrice: 57,
+        details: ''
     },
     {
         key: '1',
         customerName: 'Customer Name 1',
-        date: 50,
-        totalPrice: 50,
-        details: 2500
+        date: "2019-11-18",
+        totalPrice: 90,
+        details: ''
     },
     {
         key: '1',
         customerName: 'Customer Name 1',
-        date: 50,
-        totalPrice: 50,
-        details: 2500
+        date: "2019-11-18",
+        totalPrice: 100,
+        details: ''
     }
 
 ];
