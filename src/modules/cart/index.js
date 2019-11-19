@@ -126,7 +126,7 @@ class Carts extends React.Component {
                 <Text style={{ fontSize: 16 }}>Customer Name </Text>
                 <Input
                   placeholder="Input customer name"
-                  style={{ width: 200, marginTop: 15 }}
+                  style={{marginTop: 15 }}
                 />
               </div>
             </div>
