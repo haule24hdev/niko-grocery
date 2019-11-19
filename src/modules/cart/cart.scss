@@ -1,0 +1,31 @@
+.select-cart {
+    float: right;
+}
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+.button-cart {
+background: #C4C4C4;
+width: 150px;
+height: 50px;
+border-width: 0px;
+border-style: initial;
+border-color: initial;
+border-image: initial;
+outline: none;
+margin-top: 30px;
+}
+.list-menu-cart {
+display: flex;
+margin-top: 30px;
+justify-content: space-between;
+}
+
+.view-cart-cart {
+background: #FAFAFA;
+padding: 20px;
+max-height: 400px; 
+text-align: center;
+}

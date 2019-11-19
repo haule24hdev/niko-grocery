@@ -1,0 +1,33 @@
+.products {
+  color: rebeccapurple;
+}
+.select {
+  float: right;
+}
+.button {
+  background: #C4C4C4;
+  width: 150px;
+  height: 50px;
+  border-width: 0px;
+  border-style: initial;
+  border-color: initial;
+  border-image: initial;
+  outline: none;
+  margin-top: 30px;
+}
+.list-menu {
+  display: flex;
+  margin-top: 30px;
+  justify-content: space-between;
+}
+
+.view-cart {
+  background: #FAFAFA;
+  padding: 20px;
+  max-height: 200px; 
+  text-align: center;
+}
+
+.input {
+  width: 30px;
+}

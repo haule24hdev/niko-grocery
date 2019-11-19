@@ -23,7 +23,7 @@ function App() {
             <Menu.Item key="1">Product page</Menu.Item>
             <Menu.Item key="2">Cart</Menu.Item>
             <Menu.Item key="3">Order History</Menu.Item>
-            <Menu.Item key="4">Edit Food Detail</Menu.Item>
+            <Menu.Item key="4">Edit Food Details</Menu.Item>
           </Menu>
         </Sider>
         <Content
