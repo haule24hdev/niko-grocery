@@ -15,6 +15,7 @@
     "redux": "^4.0.4"
   },
   "scripts": {
+    "start:api":"node GA_API/index.js", 
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
