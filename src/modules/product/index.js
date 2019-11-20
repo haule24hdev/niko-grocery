@@ -6,7 +6,8 @@ import {
   Table,
   Typography,
   Button,
-  Layout
+  Layout,
+  Icon
 } from "antd";
 import "antd/dist/antd.css";
 import client from "api/http-client";
@@ -23,37 +24,45 @@ const { Content } = Layout;
 const ProductContainer = props => {
   const [products, setProducts] = useState([]);
   useEffect(() => {
-    client
-      .get("/product")
-      .then(({ data = [] }) =>
-        setProducts(
-          data.map(([name, unitPrice], index) => ({
-            name,
-            unitPrice,
-            no: index
-          }))
-        )
-      );
+    client.get("/product").then(({ data = [] }) =>
+      setProducts(
+        data.map(([name, unitPrice], index) => ({
+          name,
+          unitPrice,
+          no: index
+        }))
+      )
+    );
   }, []);
   return <Products {...props} data={products} />;
 };
 
 class Products extends React.Component {
   state = {};
-  handleSelectRow = index => {
-    const oldRowState = this.state[index] || {};
+
+  handleSelectRow = no => {
+    const oldRowState = this.state[no] || {};
     this.setState({
-      [index]: {
+      [no]: {
         ...oldRowState,
-        selected: !oldRowState.selected
+        selected: true
       }
     });
   };
 
-  handleChangeAmount = (index, value) => {
-    const oldRowState = this.state[index] || {};
+  handleDeSelectRow = no => {
+    const oldRowState = this.state[no] || {};
     this.setState({
-      [index]: {
+      [no]: {
+        ...oldRowState,
+        selected: false
+      }
+    });
+  };
+  handleChangeAmount = (no, value) => {
+    const oldRowState = this.state[no] || {};
+    this.setState({
+      [no]: {
         ...oldRowState,
         value
       }
@@ -75,24 +84,38 @@ class Products extends React.Component {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (text, record, index) => {
-        const rowState = this.state[index];
+      render: (text, record) => {
+        const rowState = this.state[record.no];
         const isSelected = rowState && rowState.selected;
+        if (!isSelected) return null;
         return (
-          <InputNumber
-            onClick={e => {
-              e.stopPropagation();
-            }}
-            onChange={value => {
-              this.handleChangeAmount(index, value);
-            }}
-            min={0}
-            value={(rowState && rowState.value) || 0}
-            style={{
-              width: 100,
-              visibility: isSelected ? "visible" : "hidden"
-            }}
-          />
+          <>
+            <InputNumber
+              onClick={e => {
+                e.stopPropagation();
+              }}
+              onChange={value => {
+                this.handleChangeAmount(record.no, value);
+              }}
+              min={0}
+              value={(rowState && rowState.value) || 0}
+              style={{
+                width: 100
+              }}
+            />
+            <Icon
+              style={{
+                marginLeft: 8,
+                color: 'gray'
+              }}
+              
+              type="delete"
+              onClick={e => {
+                e.stopPropagation();
+                this.handleDeSelectRow(record.no);
+              }}
+            />
+          </>
         );
       }
     },
@@ -126,18 +149,19 @@ class Products extends React.Component {
         </div>
         <div className="list-menu">
           <Table
+            rowKey={record => record.no}
             className="table"
             style={{ width: "75%", background: "#fff", padding: 8 }}
             columns={this.columns}
             dataSource={this.props.data}
-            rowClassName={(record, index) => {
-              const rowState = this.state[index];
+            rowClassName={record => {
+              const rowState = this.state[record.no];
               return rowState && rowState.selected ? "selected" : "";
             }}
-            onRow={(record, rowIndex) => {
+            onRow={record => {
               return {
                 onClick: () => {
-                  this.handleSelectRow(rowIndex);
+                  this.handleSelectRow(record.no);
                 }
               };
             }}

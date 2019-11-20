@@ -6,15 +6,16 @@ import { Layout, Menu } from "antd";
 
 import "antd/dist/antd.css";
 import "./App.css";
-import client from "api/http-client";
 
 const { Content, Sider } = Layout;
 
 function App() {
-  client.get("/getAllProducts").then(({data}) => console.log(data));
   return (
     <Provider store={store}>
-      <Layout style={{ background: "#E5E5E5", minHeight: '100vh' }} className="layout" >
+      <Layout
+        style={{ background: "#E5E5E5", minHeight: "100vh" }}
+        className="layout"
+      >
         <Sider
           width={250}
           style={{ background: "#E1E1E1", padding: 24 }}
