@@ -49,9 +49,11 @@ class OrderHistory extends React.Component {
       key: "details",
       render: (text, record) => (
         <a
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault()
             this.props.handleGoToDetail(record);
           }}
+          href="/"
         >
           Details
         </a>

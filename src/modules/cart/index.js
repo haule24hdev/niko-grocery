@@ -7,7 +7,6 @@ import {
   Typography,
   Button,
   Layout,
-  DatePicker
 } from "antd";
 import moment from "moment";
 import client from "api/http-client";
@@ -42,16 +41,16 @@ const columns = [
   }
 ];
 
-function handleChange(value) {
-  console.log(`selected ${value}`);
-}
+
 
 class Carts extends React.Component {
   state = {
     name: ""
   };
   render() {
-    const { state: cart } = this.props.location;
+    const cart = JSON.parse(localStorage.getItem('cart'));
+    if(!cart) return <h2>Empty Cart</h2>
+
     return (
       <Content>
         <div className="clearfix">
@@ -59,7 +58,7 @@ class Carts extends React.Component {
             className="select-cart"
             defaultValue="Select Language"
             style={{ width: 200 }}
-            onChange={handleChange}
+            // onChange={handleChange}
           >
             <Option value="en">English</Option>
             <Option value="ru">Russian</Option>
@@ -95,7 +94,7 @@ class Carts extends React.Component {
             </div>
             <Button
               onClick={() => {
-                if (this.state.name == "") {
+                if (this.state.name === "") {
                   alert("customer name is required");
                   return;
                 }
@@ -114,6 +113,7 @@ class Carts extends React.Component {
 
                 client.post("/order", payload).then(() => {
                   this.props.history.push("/order-history");
+                  localStorage.removeItem('cart');
                 });
               }}
               className="button-cart"

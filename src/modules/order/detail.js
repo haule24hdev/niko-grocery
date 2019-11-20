@@ -90,7 +90,7 @@ const OrderDetail = (props) => {
           pagination={false}
         />
       </Layout.Content>
-      <Layout.Sider style={{ background: "#fff", padding: 8 }} width={230}>
+      <Layout.Sider style={{ background: "#fff",padding: 8, height:'fit-content' }} width={230}>
         <Row style={{ textAlign: "center" }}>Customer Name</Row>
         <Row style={{ marginTop: 16 }}>
           <Text>Total Price: </Text>

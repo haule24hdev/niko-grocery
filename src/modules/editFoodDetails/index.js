@@ -3,8 +3,6 @@ import { InputNumber, Input, Table, Button, Layout } from "antd";
 import "antd/dist/antd.css";
 import client from "api/http-client";
 
-const { Search } = Input;
-
 const { Content } = Layout;
 
 const ProductContainer = props => {
@@ -27,7 +25,7 @@ const ProductContainer = props => {
   }, []);
 
   const handleUpdateProduct = product => {
-    if (products.find(p => p.no == product.no)) {
+    if (products.find(p => `${p.no}` === `${product.no}`)) {
       client.post(`/product`, product).then(() => fetchProducts());
       return;
     }
@@ -146,6 +144,7 @@ class Products extends React.Component {
       title: "Edit",
       dataIndex: "edit",
       key: "edit",
+      align: "center",
       render: (text, record) => {
         const rowState = this.state[record.no];
         if (rowState && rowState.editing) {
@@ -172,6 +171,7 @@ class Products extends React.Component {
       title: "Remove",
       dataIndex: "remove",
       key: "remove",
+      align: "center",
       render: (text, record) => {
         return (
           <Button
@@ -196,15 +196,6 @@ class Products extends React.Component {
   render() {
     return (
       <Content>
-        <div>
-          <Search
-            className="search"
-            enterButton="Search"
-            size="large"
-            style={{ width: 500 }}
-            onSearch={value => console.log(value)}
-          />
-        </div>
         <div className="list-menu">
           <Table
             rowKey={record => record.no}

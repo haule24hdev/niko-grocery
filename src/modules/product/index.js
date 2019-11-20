@@ -20,28 +20,44 @@ const { Option } = Select;
 
 const { Text } = Typography;
 
-const { Content } = Layout;
+let defaultProducts = [];
 
 const ProductContainer = props => {
   const [products, setProducts] = useState([]);
   const history = useHistory();
+
   useEffect(() => {
-    client.get("/product").then(({ data = [] }) =>
-      setProducts(
-        data.map(([name, unitPrice], index) => ({
-          name,
-          unitPrice,
-          no: index
-        }))
-      )
-    );
+    client.get("/product").then(({ data = [] }) => {
+      defaultProducts = data.map(([name, unitPrice], index) => ({
+        name,
+        unitPrice,
+        no: index
+      }));
+
+      setProducts(defaultProducts);
+    });
+    return () => (defaultProducts = []);
   }, []);
 
   const handleShowCart = cart => {
-    history.push('/cart', cart);
+    localStorage.setItem('cart', JSON.stringify(cart))
+    history.push("/cart");
   };
+
+  const handleFilter = text => {
+    setProducts(oldProducts => {
+      if (text === "") return defaultProducts;
+      return oldProducts.filter(p => p.name.includes(text));
+    });
+  };
+
   return (
-    <Products {...props} data={products} handleShowCart={handleShowCart} />
+    <Products
+      {...props}
+      data={products}
+      handleShowCart={handleShowCart}
+      handleFilter={handleFilter}
+    />
   );
 };
 
@@ -155,7 +171,7 @@ class Products extends React.Component {
       const productState = this.state[key];
 
       return {
-        ...this.props.data.find(record => record.no == key),
+        ...this.props.data.find(record => `${record.no}` === key),
         ...productState
       };
     });
@@ -171,47 +187,59 @@ class Products extends React.Component {
       .filter(row => row.selected);
     return selected.length === 0;
   };
+  
   render() {
     return (
-      <Content>
+      <>
         <div>
           <Search
             className="search"
             enterButton="Search"
             size="large"
             style={{ width: 500 }}
-            onSearch={value => console.log(value)}
+            onSearch={this.props.handleFilter}
           />
           <Select
             className="select"
             defaultValue="Select Language"
             style={{ width: 200 }}
-            // onChange={handleChange}
           >
             <Option value="en">English</Option>
             <Option value="ru">Russian</Option>
           </Select>
         </div>
-        <div className="list-menu">
-          <Table
-            rowKey={record => record.no}
-            className="table"
-            style={{ width: "75%", background: "#fff", padding: 8 }}
-            columns={this.columns}
-            dataSource={this.props.data}
-            rowClassName={record => {
-              const rowState = this.state[record.no];
-              return rowState && rowState.selected ? "selected" : "";
+        <Layout id="order-detail" style={{ marginTop: 12 }}>
+          <Layout.Content
+            style={{ background: "#fff", padding: 8, marginRight: 12 }}
+          >
+            <Table
+              rowKey={record => record.no}
+              className="table"
+              style={{ padding: 8 }}
+              columns={this.columns}
+              dataSource={this.props.data}
+              pagination={false}
+              rowClassName={record => {
+                const rowState = this.state[record.no];
+                return rowState && rowState.selected ? "selected" : "";
+              }}
+              onRow={record => {
+                return {
+                  onClick: () => {
+                    this.handleSelectRow(record.no, record);
+                  }
+                };
+              }}
+            />
+          </Layout.Content>
+          <Layout.Sider
+            style={{
+              background: "#fff",
+              padding: "24px 8px",
+              height: "fit-content"
             }}
-            onRow={record => {
-              return {
-                onClick: () => {
-                  this.handleSelectRow(record.no, record);
-                }
-              };
-            }}
-          />
-          <div className="view-cart" style={{ width: "20%" }}>
+            width={230}
+          >
             <div style={{ marginTop: 15 }}>
               <Text style={{ fontSize: 16 }}>Total Price: </Text>
               <Input
@@ -230,9 +258,9 @@ class Products extends React.Component {
             >
               View Cart
             </Button>
-          </div>
-        </div>
-      </Content>
+          </Layout.Sider>
+        </Layout>
+      </>
     );
   }
 }
