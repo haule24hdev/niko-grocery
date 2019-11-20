@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './orderHistory.scss';
 import { Link } from 'react-router-dom';
+import client from "api/http-client";
 import { 
     Table,
     Layout,
@@ -8,7 +9,23 @@ import {
 
 const { Content } = Layout;
 
-const columns = [{
+const OrderHistoryContainer = props => {
+    const [orderHistory, setOrderHistory] = useState([]);
+    useEffect(() => {
+      client
+        .get("/order")
+        .then(({ data = [] }) =>
+          setOrderHistory(
+            data
+          )
+        );
+    }, []);
+    return <OrderHistory {...props} data={orderHistory} />;
+  };
+
+class OrderHistory extends React.Component {
+    columns = [
+    {
         title: 'Customer Name',
         dataIndex: 'customerName',
         key: 'customerName',
@@ -32,45 +49,6 @@ const columns = [{
 
 ]
 
-const data = [{
-        key: '1',
-        customerName: 'Customer Name 1',
-        date: "2019-11-18",
-        totalPrice: 50,
-        details: '' 
-    },
-    {
-        key: '1',
-        customerName: 'Customer Name 1',
-        date: "2019-11-18",
-        totalPrice: 13,
-        details: ''
-    },
-    {
-        key: '1',
-        customerName: 'Customer Name 1',
-        date: "2019-11-18",
-        totalPrice: 57,
-        details: ''
-    },
-    {
-        key: '1',
-        customerName: 'Customer Name 1',
-        date: "2019-11-18",
-        totalPrice: 90,
-        details: ''
-    },
-    {
-        key: '1',
-        customerName: 'Customer Name 1',
-        date: "2019-11-18",
-        totalPrice: 100,
-        details: ''
-    }
-
-];
-
-class OrderHistory extends React.Component {
     render(){
         return(
             <Content>
@@ -78,8 +56,9 @@ class OrderHistory extends React.Component {
                     <Table
                         className="table-cart"
                         style={{ width: "100%", background: "#fff", padding: 8 }}
-                        columns={columns} 
-                        dataSource={data} 
+                        columns={this.columns} 
+                        dataSource={this.props.data} 
+                        pagination={false}
                     />
                 </div>
             </Content>
@@ -87,4 +66,4 @@ class OrderHistory extends React.Component {
     }
 }
 
-export default OrderHistory;
+export default OrderHistoryContainer;
