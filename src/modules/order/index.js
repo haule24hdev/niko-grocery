@@ -6,6 +6,7 @@ import {
     Table,
     Layout,
 } from 'antd';
+import moment from 'moment';
 
 const { Content } = Layout;
 
@@ -34,6 +35,7 @@ class OrderHistory extends React.Component {
         title: 'Date',
         dataIndex: 'date',
         key: 'date',
+        render: (text, record)=> moment(record.date).format("YYYY-MM-DD")
     },
     {
         title: 'Total Price',

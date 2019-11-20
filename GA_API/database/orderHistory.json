@@ -94,6 +94,19 @@
           "unitPrice": 20
         }
       ]
+    },
+    {
+      "customerName": "asda",
+      "date": "2019-11-20T10:24:37.196Z",
+      "totalPrice": 10,
+      "products": [
+        {
+          "name": "potato",
+          "no": 0,
+          "count": 1,
+          "unitPrice": 10
+        }
+      ]
     }
   ]
 }
