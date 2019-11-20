@@ -1,11 +1,16 @@
-var express = require("express");
-var app = express();
+const express = require('express')
+const app = express()
+const editJsonFile = require("edit-json-file")
+
 
 // parse application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}))
 
 // parse application/json
-app.use(express.json());
+app.use(express.json())
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
   res.header(
@@ -15,90 +20,79 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get("/getAllOrders", (req, res) => {
-  // get order data from database or file storage
-  dbResponse = [
-    {
-      customerName: "Eternal1",
-      date: "2019-11-16",
-      totalPrice: 10000,
-      orderDetail: { p1: [40, 4], p4: [80, 4], p6: [100, 5] }
-    },
-    {
-      customerName: "Eternal2",
-      date: "2019-11-16",
-      totalPrice: 30000,
-      orderDetail: { p1: [40, 5], p2: [100, 4], p6: [100, 8] }
-    },
-    {
-      customerName: "Eternal3",
-      date: "2019-11-18",
-      totalPrice: 40000,
-      orderDetail: { p1: [40, 6], p3: [90, 4], p6: [100, 9] }
-    }
-  ];
-  res.json(dbResponse);
-});
+// connect file-db
+let productsList = editJsonFile(`${__dirname}/database/productsList.json`, {
+  autosave: true
+})
+let orderHistory = editJsonFile(`${__dirname}/database/orderHistory.json`, {
+  autosave: true
+})
+// products and orderDetails db-file
+productsListData = productsList.get();
+orderHistoryData = orderHistory.get();
 
-app.post("/placeOrder", (req, res) => {
-  var orderData = req.body;
-  orderData = {
-    customerName: "Eternal0",
-    date: "2019-11-10",
-    totalPrice: 100000,
-    orderDetail: { p1: [40, 4], p4: [80, 4], p6: [100, 7] }
-  }; //temp
-  console.log(orderData);
-  // save orderData.customerName, orderData.date, orderData.totalPrice, orderData.orderDetail
-  var response = {
+
+
+app.get("/order", (req, res) => {
+  res.json(orderHistoryData.orderDetails)
+})
+
+app.post("/order", (req, res) => {
+  let newOrder = {
+    "customerName": req.body.customerName,
+    "date": req.body.date,
+    "totalPrice": req.body.totalPrice,
+    "products": req.body.products
+  }
+  orderHistory.set("orderDetails.as.object", orderHistoryData.orderDetails.push(newOrder))
+  let response = {
     status: 200,
-    success: "Order Saved Successfully"
-  };
+    success: 'Order Saved Successfully'
+  }
   res.end(JSON.stringify(response));
 });
 
-app.get("/getAllProducts", (req, res) => {
-  var dbResponse = [
-    { no: 1, name: "product1", unitPrice: 20 },
-    { no: 2, name: "product2", unitPrice: 30 },
-    { no: 3, name: "product3", unitPrice: 40 }
-  ];
-  res.json(dbResponse);
+
+
+app.get("/product", (req, res) => {
+  res.json(productsListData.products)
 });
 
-app.post("/addProduct", (req, res) => {
-  var newProduct = req.body.newProduct;
-  newProduct = { no: 1, name: "product1", unitPrice: 20 }; //temp
-  // add new product
-  var response = {
+app.post("/product", (req, res) => {
+  let newProduct = [req.body.productName, req.body.unitPrice]
+  productsList.set("products.as.object", productsListData.products.push(newProduct))
+  let response = {
     status: 200,
-    success: "Product Added Successfully"
-  };
+    success: 'Product Added Successfully'
+  }
   res.end(JSON.stringify(response));
-});
+})
 
-app.post("/updateProduct/:id", (req, res) => {
-  var id = parseInt(req.params.id);
-  var newProductData = req.body.newProductData;
-  newProductData = { no: 1, name: "product1", unitPrice: 20 }; //temp
-  // update the product
-  var response = {
+app.put("/product/:id", (req, res) => {
+  let id = parseInt(req.params.id)
+  let updateData = [req.body.productName, req.body.unitPrice]
+  let temp = productsListData.products[id] = updateData
+  productsList.set("products.as.object", temp)
+  let response = {
     status: 200,
-    success: "Product Updated Successfully"
-  };
+    success: 'Product Updated Successfully'
+  }
   res.end(JSON.stringify(response));
-});
+})
 
-app.delete("/:id", (req, res) => {
-  var id = parseInt(req.params.id);
+app.delete("/product/:id", (req, res) => {
+  let id = parseInt(req.params.id)
+  productsList.set("products.as.object", productsListData.products.splice(id, 1))
   // remove that id
-  var response = {
+  let response = {
     status: 200,
-    success: "Product Removed Successfully"
-  };
+    success: 'Product Removed Successfully'
+  }
   res.end(JSON.stringify(response));
-});
+})
+
+
 
 app.listen(4001, () => {
-  console.log("Server running on port 4001");
+  console.log("Grocery Store API Running At localhost:4001")
 });

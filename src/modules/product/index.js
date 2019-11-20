@@ -21,11 +21,21 @@ const { Text } = Typography;
 const { Content } = Layout;
 
 const ProductContainer = props => {
-  const [data, setData] = useState([]);
+  const [products, setProducts] = useState([]);
   useEffect(() => {
-    client.get("/getAllProducts").then(({ data }) => setData(data));
+    client
+      .get("/product")
+      .then(({ data = [] }) =>
+        setProducts(
+          data.map(([name, unitPrice], index) => ({
+            name,
+            unitPrice,
+            no: index
+          }))
+        )
+      );
   }, []);
-  return <Products {...props} data={data} />;
+  return <Products {...props} data={products} />;
 };
 
 class Products extends React.Component {
@@ -89,7 +99,7 @@ class Products extends React.Component {
     {
       title: "Price",
       dataIndex: "price",
-      key: "price",
+      key: "price"
     }
   ];
 

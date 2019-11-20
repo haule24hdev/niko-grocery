@@ -1,0 +1,45 @@
+{
+  "orderDetails": [{
+      "customerName": "eternal",
+      "date": "2019-11-17",
+      "totalPrice": 490,
+      "products": [{
+          "productName": "potato",
+          "unitPrice": 10,
+          "count": 5
+        },
+        {
+          "productName": "oil",
+          "unitPrice": 20,
+          "count": 10
+        },
+        {
+          "productName": "butter",
+          "unitPrice": 80,
+          "count": 3
+        }
+      ]
+    },
+    {
+      "customerName": "seal",
+      "date": "2019-11-18",
+      "totalPrice": 21500,
+      "products": [{
+          "productName": "egg",
+          "unitPrice": 5,
+          "count": 1000
+        },
+        {
+          "productName": "salmon",
+          "unitPrice": 130,
+          "count": 50
+        },
+        {
+          "productName": "beef",
+          "unitPrice": 100,
+          "count": 100
+        }
+      ]
+    }
+  ]
+}
