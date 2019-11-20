@@ -13,7 +13,7 @@ function App() {
   return (
     <Provider store={store}>
       <Layout
-        style={{ background: "#E5E5E5", minHeight: "100vh" }}
+        style={{ background: "#E5E5E5", margin: 'auto',minHeight: "100vh"}}
         className="layout"
       >
         <Sider

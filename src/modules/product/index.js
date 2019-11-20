@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   InputNumber,
   Input,
@@ -23,6 +24,7 @@ const { Content } = Layout;
 
 const ProductContainer = props => {
   const [products, setProducts] = useState([]);
+  const history = useHistory();
   useEffect(() => {
     client.get("/product").then(({ data = [] }) =>
       setProducts(
@@ -34,18 +36,26 @@ const ProductContainer = props => {
       )
     );
   }, []);
-  return <Products {...props} data={products} />;
+
+  const handleShowCart = cart => {
+    history.push('/cart', cart);
+  };
+  return (
+    <Products {...props} data={products} handleShowCart={handleShowCart} />
+  );
 };
 
 class Products extends React.Component {
   state = {};
 
-  handleSelectRow = no => {
+  handleSelectRow = (no, record) => {
     const oldRowState = this.state[no] || {};
     this.setState({
       [no]: {
         ...oldRowState,
-        selected: true
+        selected: true,
+        value: oldRowState.value || 1,
+        price: oldRowState.price || record.unitPrice
       }
     });
   };
@@ -59,12 +69,13 @@ class Products extends React.Component {
       }
     });
   };
-  handleChangeAmount = (no, value) => {
+  handleChangeAmount = (no, value, record) => {
     const oldRowState = this.state[no] || {};
     this.setState({
       [no]: {
         ...oldRowState,
-        value
+        value,
+        price: record.unitPrice * value
       }
     });
   };
@@ -95,9 +106,9 @@ class Products extends React.Component {
                 e.stopPropagation();
               }}
               onChange={value => {
-                this.handleChangeAmount(record.no, value);
+                this.handleChangeAmount(record.no, value, record);
               }}
-              min={0}
+              min={1}
               value={(rowState && rowState.value) || 0}
               style={{
                 width: 100
@@ -106,9 +117,8 @@ class Products extends React.Component {
             <Icon
               style={{
                 marginLeft: 8,
-                color: 'gray'
+                color: "gray"
               }}
-              
               type="delete"
               onClick={e => {
                 e.stopPropagation();
@@ -122,10 +132,45 @@ class Products extends React.Component {
     {
       title: "Price",
       dataIndex: "price",
-      key: "price"
+      key: "price",
+      render: (text, record) => {
+        const rowState = this.state[record.no];
+        return rowState && rowState.selected && rowState.price;
+      }
     }
   ];
 
+  getTotal = () => {
+    return Object.keys(this.state).reduce((acc, key) => {
+      const rowState = this.state[key];
+      if (rowState && rowState.selected) {
+        return acc + rowState.price || 0;
+      }
+      return acc;
+    }, 0);
+  };
+
+  toOrderDetail = () => {
+    const products = Object.keys(this.state).map(key => {
+      const productState = this.state[key];
+
+      return {
+        ...this.props.data.find(record => record.no == key),
+        ...productState
+      };
+    });
+    return {
+      products,
+      total: this.getTotal()
+    };
+  };
+
+  isEmptyCart = () => {
+    const selected = Object.keys(this.state)
+      .map(key => this.state[key])
+      .filter(row => row.selected);
+    return selected.length === 0;
+  };
   render() {
     return (
       <Content>
@@ -161,7 +206,7 @@ class Products extends React.Component {
             onRow={record => {
               return {
                 onClick: () => {
-                  this.handleSelectRow(record.no);
+                  this.handleSelectRow(record.no, record);
                 }
               };
             }}
@@ -169,9 +214,22 @@ class Products extends React.Component {
           <div className="view-cart" style={{ width: "20%" }}>
             <div style={{ marginTop: 15 }}>
               <Text style={{ fontSize: 16 }}>Total Price: </Text>
-              <Input style={{ width: 120, marginLeft: 10 }} />
+              <Input
+                value={this.getTotal()}
+                style={{ width: 120, marginLeft: 10 }}
+              />
             </div>
-            <Button className="button">View Cart</Button>
+            <Button
+              onClick={() => {
+                if (!this.isEmptyCart()) {
+                  const cart = this.toOrderDetail();
+                  this.props.handleShowCart(cart);
+                }
+              }}
+              className="button"
+            >
+              View Cart
+            </Button>
           </div>
         </div>
       </Content>

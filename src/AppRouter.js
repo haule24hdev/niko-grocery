@@ -3,8 +3,8 @@ import { Router, Switch, Route } from "react-router-dom";
 import Products from "modules/product";
 import Carts from "modules/cart";
 import AppHistory from "AppHistory";
-import OrderHistory from "modules/orderHistory";
-import OrderDetail from "modules/orderHistory/detail";
+import OrderHistory from "modules/order";
+import OrderDetail from "modules/order/detail";
 import EditableFormTable from 'modules/editFoodDetails';
 
 const AppRouter = () => (

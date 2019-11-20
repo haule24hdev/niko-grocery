@@ -10,7 +10,7 @@ import {
   DatePicker
 } from "antd";
 import moment from "moment";
-
+import client from "api/http-client";
 const { Option } = Select;
 
 const { Text } = Typography;
@@ -22,8 +22,8 @@ const dateFormat = "YYYY/MM/DD";
 const columns = [
   {
     title: "Product Name",
-    dataIndex: "productName",
-    key: "productName"
+    dataIndex: "name",
+    key: "name"
   },
   {
     title: "Unit Price",
@@ -32,8 +32,8 @@ const columns = [
   },
   {
     title: "Amount",
-    dataIndex: "amount",
-    key: "amount"
+    dataIndex: "value",
+    key: "value"
   },
   {
     title: "Price",
@@ -42,50 +42,16 @@ const columns = [
   }
 ];
 
-const data = [
-  {
-    key: "1",
-    productName: "Product Name 2",
-    unitPrice: 50,
-    amount: 50,
-    price: 2500
-  },
-  {
-    key: "2",
-    productName: "Product Name 1",
-    unitPrice: 13,
-    amount: 13,
-    price: 169
-  },
-  {
-    key: "3",
-    productName: "Product Name 1",
-    unitPrice: 57,
-    amount: 57,
-    price: 3249
-  },
-  {
-    key: "4",
-    productName: "Product Name 1",
-    unitPrice: 90,
-    amount: 90,
-    price: 8100
-  },
-  {
-    key: "5",
-    productName: "Product Name 3",
-    unitPrice: 100,
-    amount: 100,
-    price: 10000
-  }
-];
-
 function handleChange(value) {
   console.log(`selected ${value}`);
 }
 
 class Carts extends React.Component {
+  state = {
+    name: ""
+  };
   render() {
+    const { state: cart } = this.props.location;
     return (
       <Content>
         <div className="clearfix">
@@ -101,36 +67,59 @@ class Carts extends React.Component {
         </div>
         <div className="list-menu-cart">
           <Table
+            rowKey={record => record.no}
             className="table-cart"
             style={{ width: "75%", background: "#fff", padding: 8 }}
             columns={columns}
-            dataSource={data}
+            dataSource={cart.products}
           />
           <div className="view-cart-cart" style={{ width: "20%" }}>
             <div style={{ marginTop: 20 }}>
               <div>
-                <Text style={{ fontSize: 16 }}>Total Price: </Text>
-                <Input
-                  defaultValue="30418"
-                  style={{ width: 120, marginLeft: 10 }}
-                />
+                <Text style={{ fontSize: 16 }}>Total Price: {cart.total}</Text>
               </div>
               <div style={{ marginTop: 20 }}>
-                <Text style={{ fontSize: 16 }}> Date: </Text>
-                <DatePicker
-                  defaultValue={moment("2019/11/18", dateFormat)}
-                  format={dateFormat}
-                />
+                <Text style={{ fontSize: 16 }}>
+                  {" "}
+                  Date: {moment().format(dateFormat)}{" "}
+                </Text>
               </div>
               <div style={{ marginTop: 50 }}>
                 <Text style={{ fontSize: 16 }}>Customer Name </Text>
                 <Input
                   placeholder="Input customer name"
-                  style={{marginTop: 15 }}
+                  style={{ marginTop: 15 }}
+                  onChange={e => this.setState({ name: e.target.value })}
                 />
               </div>
             </div>
-            <Button className="button-cart">Confirm</Button>
+            <Button
+              onClick={() => {
+                if (this.state.name == "") {
+                  alert("customer name is required");
+                  return;
+                }
+
+                const payload = {
+                  totalPrice: cart.total,
+                  customerName: this.state.name,
+                  products: cart.products.map(product => ({
+                    name: product.name,
+                    no: product.no,
+                    count: product.value,
+                    unitPrice: product.unitPrice
+                  })),
+                  date: moment.utc()
+                };
+
+                client.post("/order", payload).then(() => {
+                  this.props.history.push("/order-history");
+                });
+              }}
+              className="button-cart"
+            >
+              Confirm
+            </Button>
           </div>
         </div>
       </Content>
