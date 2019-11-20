@@ -76,7 +76,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"productName\": \"new-product\",\n\t\"unitPrice\": 900\n}"
+					"raw": "{\n\t\"productName\": [\"new-product-r\", \"new-product-c\", \"new-product-k\"],\n\t\"unitPrice\": 900\n}"
 				},
 				"url": {
 					"raw": "http://localhost:3000/product",
@@ -105,7 +105,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"productName\": \"updated product\",\n\t\"unitPrice\": 444\n}"
+					"raw": "{\n\t\"productName\": [\"updated_product-r\", \"updated_product-c\", \"updated_product-k\"],\n\t\"unitPrice\": 444\n}"
 				},
 				"url": {
 					"raw": "http://localhost:3000/product/:id",
@@ -129,7 +129,7 @@
 			"response": []
 		},
 		{
-			"name": "Delete an Product",
+			"name": "Delete a Product",
 			"request": {
 				"method": "DELETE",
 				"header": [],
@@ -167,7 +167,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"customerName\": \"new customer\",\r\n    \"date\": \"2019-11-20\",\r\n    \"totalPrice\": 20,\r\n    \"products\": [{\r\n\t\t\"productName\": \"potato\",\r\n\t\t\"unitPrice\": 10,\r\n    \t\"count\": 1\r\n    },\r\n    {\r\n\t\t\"productName\": \"egg\",\r\n\t\t\"unitPrice\": 5,\r\n    \t\"count\": 2\r\n    }]\r\n}"
+					"raw": "{\r\n    \"customerName\": \"new customer\",\r\n    \"date\": \"2019-11-20\",\r\n    \"totalPrice\": 210,\r\n    \"products\": [{\r\n\t\t\"productName\": [\"potato-r\", \"potato-c\", \"potato-k\"],\r\n\t\t\"unitPrice\": 10,\r\n    \t\"count\": 1\r\n    },\r\n    {\r\n\t\t\"productName\": [\"beef-r\", \"beef-c\", \"beef-k\"],\r\n\t\t\"unitPrice\": 100,\r\n    \t\"count\": 2\r\n    }]\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:3000/order",

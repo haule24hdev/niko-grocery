@@ -1,15 +1,10 @@
 import React from "react";
 import "./cart.scss";
-import {
-  Input,
-  Select,
-  Table,
-  Typography,
-  Button,
-  Layout,
-} from "antd";
+import { Input, Select, Table, Typography, Button, Layout } from "antd";
 import moment from "moment";
 import client from "api/http-client";
+import { languages } from "config";
+
 const { Option } = Select;
 
 const { Text } = Typography;
@@ -18,50 +13,51 @@ const { Content } = Layout;
 
 const dateFormat = "YYYY/MM/DD";
 
-const columns = [
-  {
-    title: "Product Name",
-    dataIndex: "productName",
-    key: "productName"
-  },
-  {
-    title: "Unit Price",
-    dataIndex: "unitPrice",
-    key: "unitPrice"
-  },
-  {
-    title: "Amount",
-    dataIndex: "value",
-    key: "value"
-  },
-  {
-    title: "Price",
-    dataIndex: "price",
-    key: "price"
-  }
-];
-
-
-
 class Carts extends React.Component {
   state = {
-    name: ""
+    name: "",
+    language: languages[0].code
   };
+  getColumns = () => [
+    {
+      title: "Product Name",
+      dataIndex: `name[${this.state.language}]`,
+      key: `name[${this.state.language}]`
+    },
+    {
+      title: "Unit Price",
+      dataIndex: "unitPrice",
+      key: "unitPrice"
+    },
+    {
+      title: "Amount",
+      dataIndex: "value",
+      key: "value"
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price"
+    }
+  ];
   render() {
-    const cart = JSON.parse(localStorage.getItem('cart'));
-    if(!cart) return <h2>Empty Cart</h2>
+    const cart = JSON.parse(localStorage.getItem("cart"));
+    if (!cart) return <h2>Empty Cart</h2>;
 
     return (
       <Content>
         <div className="clearfix">
           <Select
-            className="select-cart"
-            defaultValue="Select Language"
+            className="select"
+            defaultValue={languages[0].code}
             style={{ width: 200 }}
-            // onChange={handleChange}
+            onChange={value => this.setState({ language: value })}
           >
-            <Option value="en">English</Option>
-            <Option value="ru">Russian</Option>
+            {languages.map(({ code, label }) => (
+              <Option key={code} value={code}>
+                {label}
+              </Option>
+            ))}
           </Select>
         </div>
         <div className="list-menu-cart">
@@ -69,8 +65,9 @@ class Carts extends React.Component {
             rowKey={record => record.no}
             className="table-cart"
             style={{ width: "75%", background: "#fff", padding: 8 }}
-            columns={columns}
+            columns={this.getColumns()}
             dataSource={cart.products}
+            pagination={false}
           />
           <div className="view-cart-cart" style={{ width: "20%" }}>
             <div style={{ marginTop: 20 }}>
@@ -103,7 +100,7 @@ class Carts extends React.Component {
                   totalPrice: cart.total,
                   customerName: this.state.name,
                   products: cart.products.map(product => ({
-                    productName: product.productName,
+                    productName: Object.values(product.name),
                     no: product.no,
                     count: product.value,
                     unitPrice: product.unitPrice
@@ -113,7 +110,7 @@ class Carts extends React.Component {
 
                 client.post("/order", payload).then(() => {
                   this.props.history.push("/order-history");
-                  localStorage.removeItem('cart');
+                  localStorage.removeItem("cart");
                 });
               }}
               className="button-cart"

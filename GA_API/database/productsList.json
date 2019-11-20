@@ -1,44 +1,68 @@
 {
   "products": [
-    [
-      "oil",
-      20
-    ],
-    [
-      "milk",
-      30
-    ],
-    [
-      "chocolate",
-      40
-    ],
-    [
-      "beef",
-      100
-    ],
-    [
-      "pork",
-      120
-    ],
-    [
-      "butter",
-      80
-    ],
-    [
-      "egg",
-      5
-    ],
-    [
-      "cream",
-      90
-    ],
-    [
-      "salmon443",
-      132
-    ],
-    [
-      "test",
-      7
-    ]
+    {
+      "name": [
+        "oil-r",
+        "oil-c",
+        "oil-k122"
+      ],
+      "unitPrice": 20
+    },
+    {
+      "name": [
+        "butter-r",
+        "butter-c",
+        "butter-k"
+      ],
+      "unitPrice": 30
+    },
+    {
+      "name": [
+        "beef-r",
+        "beef-c",
+        "beef-k"
+      ],
+      "unitPrice": 100
+    },
+    {
+      "name": [
+        "pork-r",
+        "pork-c",
+        "pork-k"
+      ],
+      "unitPrice": 50
+    },
+    {
+      "name": [
+        "salmon-r",
+        "salmon-c",
+        "salmon-k"
+      ],
+      "unitPrice": 130
+    },
+    {
+      "name": [
+        "noodle-r",
+        "noodle-c",
+        "noodle-k"
+      ],
+      "unitPrice": 70
+    },
+    {
+      "name": [
+        "tofu-r",
+        "tofu-c",
+        "tofu-k"
+      ],
+      "unitPrice": 80
+    },
+    {
+      "name": [
+        "asd-r",
+        "asd-12",
+        "asd-c"
+      ],
+      "unitPrice": 123
+    }
   ]
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { InputNumber, Input, Table, Button, Layout } from "antd";
 import "antd/dist/antd.css";
 import client from "api/http-client";
+import { languages } from "config";
 
 const { Content } = Layout;
 
@@ -11,8 +12,12 @@ const ProductContainer = props => {
   const fetchProducts = () => {
     client.get("/product").then(({ data = [] }) =>
       setProducts(
-        data.map(([name, unitPrice], index) => ({
-          name,
+        data.map(({ name, unitPrice }, index) => ({
+          name: {
+            [languages[0].code]: name[0],
+            [languages[1].code]: name[1],
+            [languages[2].code]: name[2]
+          },
           unitPrice,
           no: index
         }))
@@ -25,7 +30,7 @@ const ProductContainer = props => {
   }, []);
 
   const handleUpdateProduct = product => {
-    if (products.find(p => `${p.no}` === `${product.no}`)) {
+    if (products.find(p => `${p.no}` === `${product.no}`).isNew) {
       client.post(`/product`, product).then(() => fetchProducts());
       return;
     }
@@ -77,6 +82,7 @@ class Products extends React.Component {
       }
     });
   };
+
   handleChange = (no, key, value) => {
     const oldRowState = this.state[no] || {};
     this.setState({
@@ -87,11 +93,24 @@ class Products extends React.Component {
     });
   };
 
+  handleChangeName = (no, key, value) => {
+    const oldRowState = this.state[no] || {};
+    this.setState({
+      [no]: {
+        ...oldRowState,
+        name: {
+          ...oldRowState.name,
+          [key]: value
+        }
+      }
+    });
+  };
+
   columns = [
     {
       title: "Product Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "name[r]",
+      key: "name[r]",
       render: (text, record) => {
         const rowState = this.state[record.no];
         const editing = rowState && rowState.editing;
@@ -100,9 +119,55 @@ class Products extends React.Component {
           <>
             <Input
               onChange={e => {
-                this.handleChange(record.no, "name", e.target.value);
+                this.handleChangeName(record.no, "r", e.target.value);
               }}
-              value={rowState.name}
+              value={rowState.name.r}
+              style={{
+                width: 100
+              }}
+            />
+          </>
+        );
+      }
+    },
+    {
+      title: "Product Name",
+      dataIndex: "name[c]",
+      key: "name[c]",
+      render: (text, record) => {
+        const rowState = this.state[record.no];
+        const editing = rowState && rowState.editing;
+        if (!editing) return text;
+        return (
+          <>
+            <Input
+              onChange={e => {
+                this.handleChangeName(record.no, "c", e.target.value);
+              }}
+              value={rowState.name.c}
+              style={{
+                width: 100
+              }}
+            />
+          </>
+        );
+      }
+    },
+    {
+      title: "Product Name",
+      dataIndex: "name[k]",
+      key: "name[k]",
+      render: (text, record) => {
+        const rowState = this.state[record.no];
+        const editing = rowState && rowState.editing;
+        if (!editing) return text;
+        return (
+          <>
+            <Input
+              onChange={e => {
+                this.handleChangeName(record.no, "k", e.target.value);
+              }}
+              value={rowState.name.k}
               style={{
                 width: 100
               }}
@@ -154,7 +219,7 @@ class Products extends React.Component {
               onClick={() => {
                 this.props.handleUpdateProduct({
                   no: record.no,
-                  productName: rowState.name,
+                  productName: Object.values(rowState.name),
                   unitPrice: rowState.unitPrice
                 });
                 this.handleDeSelectRow(record.no);
@@ -213,7 +278,11 @@ class Products extends React.Component {
               onClick={() => {
                 const initalNewProduct = {
                   no: this.props.data.length,
-                  name: "",
+                  name: {
+                    r: "",
+                    c: "",
+                    k: ""
+                  },
                   unitPrice: 1,
                   isNew: true
                 };

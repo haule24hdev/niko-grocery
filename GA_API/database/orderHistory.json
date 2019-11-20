@@ -6,17 +6,29 @@
       "totalPrice": 490,
       "products": [
         {
-          "productName": "potato",
+          "productName": [
+            "potato-r",
+            "potato-c",
+            "potato-k"
+          ],
           "unitPrice": 10,
           "count": 5
         },
         {
-          "productName": "oil",
+          "productName": [
+            "oil-r",
+            "oil-c",
+            "oil-k"
+          ],
           "unitPrice": 20,
           "count": 10
         },
         {
-          "productName": "butter",
+          "productName": [
+            "tofu-r",
+            "tofu-c",
+            "tofu-k"
+          ],
           "unitPrice": 80,
           "count": 3
         }
@@ -28,100 +40,104 @@
       "totalPrice": 21500,
       "products": [
         {
-          "productName": "egg",
+          "productName": [
+            "potato-r",
+            "potato-c",
+            "potato-k"
+          ],
           "unitPrice": 5,
-          "count": 1000
+          "count": 500
         },
         {
-          "productName": "salmon",
+          "productName": [
+            "salmon-r",
+            "salmon-c",
+            "salmon-k"
+          ],
           "unitPrice": 130,
           "count": 50
         },
         {
-          "productName": "beef",
+          "productName": [
+            "beef-r",
+            "beef-c",
+            "beef-k"
+          ],
           "unitPrice": 100,
           "count": 100
         }
       ]
     },
     {
-      "customerName": "hau",
-      "date": "2019-11-20T10:05:00.192Z",
-      "totalPrice": 70,
-      "products": [
-        0,
-        1
-      ]
-    },
-    {
-      "customerName": "i'am ad",
-      "date": "2019-11-20T10:10:23.886Z",
-      "totalPrice": 70,
+      "customerName": "new customer",
+      "date": "2019-11-20",
+      "totalPrice": 210,
       "products": [
         {
-          "name": "potato",
+          "productName": [
+            "potato-r",
+            "potato-c",
+            "potato-k"
+          ],
           "unitPrice": 10,
-          "no": 0,
-          "selected": true,
-          "value": 1,
-          "price": 10
+          "count": 1
         },
         {
-          "name": "oil",
-          "unitPrice": 20,
-          "no": 1,
-          "selected": true,
-          "value": 3,
-          "price": 60
+          "productName": [
+            "beef-r",
+            "beef-c",
+            "beef-k"
+          ],
+          "unitPrice": 100,
+          "count": 2
         }
       ]
     },
     {
-      "customerName": "hau",
-      "date": "2019-11-20T10:14:31.584Z",
-      "totalPrice": 70,
+      "customerName": "new customer",
+      "date": "2019-11-20",
+      "totalPrice": 210,
       "products": [
         {
-          "name": "potato",
+          "productName": [
+            "potato-r",
+            "potato-c",
+            "potato-k"
+          ],
+          "unitPrice": 10,
+          "count": 1
+        },
+        {
+          "productName": [
+            "beef-r",
+            "beef-c",
+            "beef-k"
+          ],
+          "unitPrice": 100,
+          "count": 2
+        }
+      ]
+    },
+    {
+      "customerName": "annk",
+      "date": "2019-11-20T16:07:17.518Z",
+      "totalPrice": 60,
+      "products": [
+        {
+          "productName": "potato-r",
           "no": 0,
           "count": 1,
           "unitPrice": 10
         },
         {
-          "name": "oil",
+          "productName": "oil-r",
           "no": 1,
-          "count": 3,
-          "unitPrice": 20
-        }
-      ]
-    },
-    {
-      "customerName": "asda",
-      "date": "2019-11-20T10:24:37.196Z",
-      "totalPrice": 10,
-      "products": [
-        {
-          "name": "potato",
-          "no": 0,
-          "count": 1,
-          "unitPrice": 10
-        }
-      ]
-    },
-    {
-      "customerName": "hau",
-      "date": "2019-11-20T15:08:57.331Z",
-      "totalPrice": 50,
-      "products": [
-        {
-          "name": "oil",
-          "no": 0,
           "count": 1,
           "unitPrice": 20
         },
         {
-          "name": "milk",
-          "no": 1,
+          "productName": "butter-r",
+          "no": 2,
           "count": 1,
           "unitPrice": 30
         }
@@ -129,20 +145,28 @@
     },
     {
       "customerName": "asd",
-      "date": "2019-11-20T15:14:27.404Z",
-      "totalPrice": 50,
+      "date": "2019-11-20T16:10:22.131Z",
+      "totalPrice": 70,
       "products": [
         {
-          "productName": "oil",
+          "productName": [
+            "potato-r",
+            "potato-c",
+            "potato-k"
+          ],
           "no": 0,
-          "count": 1,
-          "unitPrice": 20
+          "count": 3,
+          "unitPrice": 10
         },
         {
-          "productName": "milk",
+          "productName": [
+            "oil-r",
+            "oil-c",
+            "oil-k"
+          ],
           "no": 1,
-          "count": 1,
-          "unitPrice": 30
+          "count": 2,
+          "unitPrice": 20
         }
       ]
     }

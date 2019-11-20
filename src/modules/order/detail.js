@@ -3,8 +3,6 @@ import {
   Row,
   Table,
   Typography,
-  Input,
-  DatePicker,
   Select,
   Button,
   Layout
@@ -19,8 +17,8 @@ const dateFormat = "YYYY/MM/DD";
 const columns = [
   {
     title: "Product Name",
-    dataIndex: "productName",
-    key: "productName"
+    dataIndex: "productName[0]",
+    key: "productName[0]"
   },
   {
     title: "Unit Price",
@@ -43,7 +41,6 @@ const columns = [
 
 const OrderDetail = ({ location }) => {
   const { state: order } = location;
-  console.log(order)
   return (
     <Layout id="order-detail" style={{ marginTop: 12 }}>
       <Layout.Content
@@ -60,7 +57,7 @@ const OrderDetail = ({ location }) => {
         style={{ background: "#fff", padding: 8, height: "fit-content" }}
         width={230}
       >
-        <Row style={{ textAlign: "center" }}>{order.customerName}</Row>
+        <Row style={{ textAlign: "center" }}>Customer Name: {order.customerName}</Row>
         <Row style={{ marginTop: 16 }}>
           <Text>Total Price: {order.totalPrice} </Text>
         </Row>

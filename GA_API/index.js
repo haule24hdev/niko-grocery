@@ -20,7 +20,6 @@ app.use(function(req, res, next) {
   );
   next();
 });
-
 // connect file-db
 let productsList = editJsonFile(`${__dirname}/database/productsList.json`, {
   autosave: true
@@ -60,7 +59,10 @@ app.get("/product", (req, res) => {
 });
 
 app.post("/product", (req, res) => {
-  let newProduct = [req.body.productName, req.body.unitPrice]
+  let newProduct = {
+    "name": req.body.productName,
+    "unitPrice": req.body.unitPrice
+  }
   productsList.set("products.as.object", productsListData.products.push(newProduct))
   let response = {
     status: 200,
@@ -71,7 +73,10 @@ app.post("/product", (req, res) => {
 
 app.put("/product/:id", (req, res) => {
   let id = parseInt(req.params.id)
-  let updateData = [req.body.productName, req.body.unitPrice]
+  let updateData = {
+    "name": req.body.productName,
+    "unitPrice": req.body.unitPrice
+  }
   let temp = productsListData.products[id] = updateData
   productsList.set("products.as.object", temp)
   let response = {

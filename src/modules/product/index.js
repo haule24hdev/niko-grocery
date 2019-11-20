@@ -13,7 +13,7 @@ import {
 import "antd/dist/antd.css";
 import client from "api/http-client";
 import "./product.scss";
-
+import { languages } from "config";
 const { Search } = Input;
 
 const { Option } = Select;
@@ -24,12 +24,17 @@ let defaultProducts = [];
 
 const ProductContainer = props => {
   const [products, setProducts] = useState([]);
+  const [language, setLanguage] = useState(languages[0].code);
   const history = useHistory();
 
   useEffect(() => {
     client.get("/product").then(({ data = [] }) => {
-      defaultProducts = data.map(([productName, unitPrice], index) => ({
-        productName,
+      defaultProducts = data.map(({ name, unitPrice }, index) => ({
+        name: {
+          [languages[0].code]: name[0],
+          [languages[1].code]: name[1],
+          [languages[2].code]: name[2]
+        },
         unitPrice,
         no: index
       }));
@@ -40,8 +45,7 @@ const ProductContainer = props => {
   }, []);
 
   const handleShowCart = cart => {
-    console.log(cart)
-    localStorage.setItem('cart', JSON.stringify(cart))
+    localStorage.setItem("cart", JSON.stringify(cart));
     history.push("/cart");
   };
 
@@ -58,6 +62,8 @@ const ProductContainer = props => {
       data={products}
       handleShowCart={handleShowCart}
       handleFilter={handleFilter}
+      language={language}
+      setLanguage={setLanguage}
     />
   );
 };
@@ -97,11 +103,11 @@ class Products extends React.Component {
     });
   };
 
-  columns = [
+  getColumn =() => [
     {
       title: "Product Name",
-      dataIndex: "productName",
-      key: "productName"
+      dataIndex: `name[${this.props.language}]`,
+      key: `name[${this.props.language}]`,
     },
     {
       title: "Unit Price",
@@ -188,7 +194,7 @@ class Products extends React.Component {
       .filter(row => row.selected);
     return selected.length === 0;
   };
-  
+
   render() {
     return (
       <>
@@ -202,11 +208,16 @@ class Products extends React.Component {
           />
           <Select
             className="select"
-            defaultValue="Select Language"
+            defaultValue={languages[0].code}
             style={{ width: 200 }}
+            onChange={this.props.setLanguage}
           >
-            <Option value="en">English</Option>
-            <Option value="ru">Russian</Option>
+            {languages.map(({ code, label }) => (
+              <Option key={code} value={code}>
+                {label}
+              </Option>
+            ))}
+            
           </Select>
         </div>
         <Layout id="order-detail" style={{ marginTop: 12 }}>
@@ -217,7 +228,7 @@ class Products extends React.Component {
               rowKey={record => record.no}
               className="table"
               style={{ padding: 8 }}
-              columns={this.columns}
+              columns={this.getColumn()}
               dataSource={this.props.data}
               pagination={false}
               rowClassName={record => {
