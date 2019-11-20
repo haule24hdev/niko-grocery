@@ -1,10 +1,10 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import "./editFoodDetails.scss";
 
 import {
   Table,
   Button,
-  Layout,
   Input,
   InputNumber,
   Popconfirm,
@@ -13,32 +13,6 @@ import {
   Col,
   Icon
 } from "antd";
-
-const { Content } = Layout;
-
-const columns = [
-  {
-    title: "Product Name",
-    dataIndex: "productName",
-    key: "productName"
-  },
-  {
-    title: "Unit Price",
-    dataIndex: "unitPrice",
-    key: "unitPrice"
-  },
-  {
-    title: "Edit",
-    dataIndex: "edit",
-    key: "edit"
-  },
-  {
-    title: "Remove",
-    dataIndex: "remove",
-    key: "remove",
-    render: () => <a>Delete</a>
-  }
-];
 
 const data = [
   {
@@ -81,10 +55,6 @@ const data = [
 const EditableContext = React.createContext();
 
 class EditableCell extends React.Component {
-  constructor(props){
-    super(props);
-  }
-
   getInput = () => {
     if (this.props.inputType === "number") {
       return <InputNumber />;
@@ -159,28 +129,28 @@ class EditableTable extends React.Component {
             <span>
               <EditableContext.Consumer>
                 {form => (
-                  <a
+                  <Link
                     onClick={() => this.save(form, record.key)}
                     style={{ marginRight: 8 }}
                   >
                     Save
-                  </a>
+                  </Link>
                 )}
               </EditableContext.Consumer>
               <Popconfirm
                 title="Sure to cancel?"
                 onConfirm={() => this.cancel(record.key)}
               >
-                <a>Cancel</a>
+                <Link>Cancel</Link>
               </Popconfirm>
             </span>
           ) : (
-            <a
+            <Link
               disabled={editingKey !== ""}
               onClick={() => this.edit(record.key)}
             >
               Edit
-            </a>
+            </Link>
           );
         }
       },

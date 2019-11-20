@@ -6,12 +6,12 @@ import { Layout, Menu } from "antd";
 
 import "antd/dist/antd.css";
 import "./App.css";
-// import client from "api/http-client";
+import client from "api/http-client";
 
 const { Content, Sider } = Layout;
 
 function App() {
-  // client.get("/getAllOrders").then(data => console.log(data));
+  client.get("/getAllProducts").then(({data}) => console.log(data));
   return (
     <Provider store={store}>
       <Layout style={{ background: "#E5E5E5", minHeight: '100vh' }} className="layout" >

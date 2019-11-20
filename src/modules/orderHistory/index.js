@@ -1,5 +1,6 @@
 import React from 'react';
 import './orderHistory.scss';
+import { Link } from 'react-router-dom';
 import { 
     Table,
     Layout,
@@ -26,7 +27,7 @@ const columns = [{
         title: '',
         dataIndex: 'details',
         key: 'details',
-        render: () => <a>Details</a>
+        render: () => <Link to="">Details</Link> 
     }
 
 ]
@@ -36,7 +37,7 @@ const data = [{
         customerName: 'Customer Name 1',
         date: "2019-11-18",
         totalPrice: 50,
-        details: ''
+        details: '' 
     },
     {
         key: '1',
