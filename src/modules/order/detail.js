@@ -29,55 +29,21 @@ const columns = [
   },
   {
     title: "Amount",
-    dataIndex: "amount",
-    key: "amount"
+    dataIndex: "count",
+    key: "coun"
   },
   {
     title: "Price",
     dataIndex: "price",
-    key: "price"
+    key: "price",
+    render: (text, record) => record.unitPrice * record.count
   }
 ];
 
-const data = [
-  {
-    key: "1",
-    productName: "Product Name 2",
-    unitPrice: 50,
-    amount: 50,
-    price: 2500
-  },
-  {
-    key: "2",
-    productName: "Product Name 1",
-    unitPrice: 13,
-    amount: 13,
-    price: 169
-  },
-  {
-    key: "3",
-    productName: "Product Name 1",
-    unitPrice: 57,
-    amount: 57,
-    price: 3249
-  },
-  {
-    key: "4",
-    productName: "Product Name 1",
-    unitPrice: 90,
-    amount: 90,
-    price: 8100
-  },
-  {
-    key: "5",
-    productName: "Product Name 3",
-    unitPrice: 100,
-    amount: 100,
-    price: 10000
-  }
-];
-const OrderDetail = (props) => {
-  console.log(props)
+
+const OrderDetail = ({ location }) => {
+  const { state: order } = location;
+  console.log(order)
   return (
     <Layout id="order-detail" style={{ marginTop: 12 }}>
       <Layout.Content
@@ -85,23 +51,24 @@ const OrderDetail = (props) => {
       >
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={order.products}
           style={{ background: "#fff" }}
           pagination={false}
         />
       </Layout.Content>
-      <Layout.Sider style={{ background: "#fff",padding: 8, height:'fit-content' }} width={230}>
-        <Row style={{ textAlign: "center" }}>Customer Name</Row>
+      <Layout.Sider
+        style={{ background: "#fff", padding: 8, height: "fit-content" }}
+        width={230}
+      >
+        <Row style={{ textAlign: "center" }}>{order.customerName}</Row>
         <Row style={{ marginTop: 16 }}>
-          <Text>Total Price: </Text>
-          <Input defaultValue="30418" style={{ width: 120, marginLeft: 10 }} />
+          <Text>Total Price: {order.totalPrice} </Text>
         </Row>
         <Row style={{ marginTop: 16 }}>
-          <Text style={{ fontSize: 16 }}> Date: </Text>
-          <DatePicker
-            defaultValue={moment("2019/11/18", dateFormat)}
-            format={dateFormat}
-          />
+          <Text style={{ fontSize: 16 }}>
+            {" "}
+            Date: {moment(order.date).format(dateFormat)}{" "}
+          </Text>
         </Row>
         <Row style={{ marginTop: 36 }}>
           <Select

@@ -28,8 +28,8 @@ const ProductContainer = props => {
 
   useEffect(() => {
     client.get("/product").then(({ data = [] }) => {
-      defaultProducts = data.map(([name, unitPrice], index) => ({
-        name,
+      defaultProducts = data.map(([productName, unitPrice], index) => ({
+        productName,
         unitPrice,
         no: index
       }));
@@ -40,6 +40,7 @@ const ProductContainer = props => {
   }, []);
 
   const handleShowCart = cart => {
+    console.log(cart)
     localStorage.setItem('cart', JSON.stringify(cart))
     history.push("/cart");
   };
@@ -47,7 +48,7 @@ const ProductContainer = props => {
   const handleFilter = text => {
     setProducts(oldProducts => {
       if (text === "") return defaultProducts;
-      return oldProducts.filter(p => p.name.includes(text));
+      return oldProducts.filter(p => p.productName.includes(text));
     });
   };
 
@@ -99,8 +100,8 @@ class Products extends React.Component {
   columns = [
     {
       title: "Product Name",
-      dataIndex: "name",
-      key: "name"
+      dataIndex: "productName",
+      key: "productName"
     },
     {
       title: "Unit Price",

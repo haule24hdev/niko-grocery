@@ -21,8 +21,8 @@ const dateFormat = "YYYY/MM/DD";
 const columns = [
   {
     title: "Product Name",
-    dataIndex: "name",
-    key: "name"
+    dataIndex: "productName",
+    key: "productName"
   },
   {
     title: "Unit Price",
@@ -103,7 +103,7 @@ class Carts extends React.Component {
                   totalPrice: cart.total,
                   customerName: this.state.name,
                   products: cart.products.map(product => ({
-                    name: product.name,
+                    productName: product.productName,
                     no: product.no,
                     count: product.value,
                     unitPrice: product.unitPrice
