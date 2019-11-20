@@ -1,88 +1,69 @@
-import React from "react";
-import "./orderHistory.scss";
-import { Link } from "react-router-dom";
-import { Table, Layout } from "antd";
+import React, { useEffect, useState } from 'react';
+import './orderHistory.scss';
+import { Link } from 'react-router-dom';
+import client from "api/http-client";
+import { 
+    Table,
+    Layout,
+} from 'antd';
 
 const { Content } = Layout;
 
-const columns = [
-  {
-    title: "Customer Name",
-    dataIndex: "customerName",
-    key: "customerName"
-  },
-  {
-    title: "Date",
-    dataIndex: "date",
-    key: "date"
-  },
-  {
-    title: "Total Price",
-    dataIndex: "totalPrice",
-    key: "totalPrice"
-  },
-  {
-    title: "",
-    dataIndex: "details",
-    key: "details",
-    render: () => <Link to="">Details</Link>
-  }
-];
-
-const data = [
-  {
-    key: "1",
-    customerName: "Customer Name 1",
-    date: "2019-11-18",
-    totalPrice: 50,
-    details: ""
-  },
-  {
-    key: "1",
-    customerName: "Customer Name 1",
-    date: "2019-11-18",
-    totalPrice: 13,
-    details: ""
-  },
-  {
-    key: "1",
-    customerName: "Customer Name 1",
-    date: "2019-11-18",
-    totalPrice: 57,
-    details: ""
-  },
-  {
-    key: "1",
-    customerName: "Customer Name 1",
-    date: "2019-11-18",
-    totalPrice: 90,
-    details: ""
-  },
-  {
-    key: "1",
-    customerName: "Customer Name 1",
-    date: "2019-11-18",
-    totalPrice: 100,
-    details: ""
-  }
-];
+const OrderHistoryContainer = props => {
+    const [orderHistory, setOrderHistory] = useState([]);
+    useEffect(() => {
+      client
+        .get("/order")
+        .then(({ data = [] }) =>
+          setOrderHistory(
+            data
+          )
+        );
+    }, []);
+    return <OrderHistory {...props} data={orderHistory} />;
+  };
 
 class OrderHistory extends React.Component {
-  render() {
-    return (
-      <Content>
-        <div className="list-menu-cart">
-          <Table
-            rowKey={"index"}
-            className="table-cart"
-            style={{ width: "100%", background: "#fff", padding: 8 }}
-            columns={columns}
-            dataSource={data}
-          />
-        </div>
-      </Content>
-    );
-  }
+    columns = [
+    {
+        title: 'Customer Name',
+        dataIndex: 'customerName',
+        key: 'customerName',
+    },
+    {
+        title: 'Date',
+        dataIndex: 'date',
+        key: 'date',
+    },
+    {
+        title: 'Total Price',
+        dataIndex: 'totalPrice',
+        key: 'totalPrice',
+    },
+    {
+        title: '',
+        dataIndex: 'details',
+        key: 'details',
+        render: () => <Link to="">Details</Link> 
+    }
+
+]
+
+    render(){
+        return(
+            <Content>
+                <div className="list-menu-cart">
+                    <Table
+                        className="table-cart"
+                        style={{ width: "100%", background: "#fff", padding: 8 }}
+                        columns={this.columns} 
+                        dataSource={this.props.data} 
+                        pagination={false}
+                    />
+                </div>
+            </Content>
+        )
+    }
 }
 
-export default OrderHistory;
+export default OrderHistoryContainer;
