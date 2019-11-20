@@ -1,5 +1,13 @@
 import React from "react";
-import { Input, Select, Table, Typography, Button, Layout } from "antd";
+import {
+  InputNumber,
+  Input,
+  Select,
+  Table,
+  Typography,
+  Button,
+  Layout
+} from "antd";
 import "antd/dist/antd.css";
 import "./product.scss";
 
@@ -10,29 +18,6 @@ const { Option } = Select;
 const { Text } = Typography;
 
 const { Content } = Layout;
-
-const columns = [
-  {
-    title: "Product Name",
-    dataIndex: "productName",
-    key: "productName"
-  },
-  {
-    title: "Unit Price",
-    dataIndex: "unitPrice",
-    key: "unitPrice"
-  },
-  {
-    title: "Amount",
-    dataIndex: "amount",
-    key: "amount"
-  },
-  {
-    title: "Price",
-    dataIndex: "price",
-    key: "price"
-  }
-];
 
 const data = [
   {
@@ -76,6 +61,65 @@ function handleChange(value) {
   console.log(`selected ${value}`);
 }
 class Products extends React.Component {
+  state = {};
+  handleSelectRow = index => {
+    const oldRowState = this.state[index] || {};
+    this.setState({
+      [index]: {
+        ...oldRowState,
+        selected: !oldRowState.selected
+      }
+    });
+  };
+
+  handleChangeAmount = (index, value) => {
+    const oldRowState = this.state[index] || {};
+    this.setState({
+      [index]: {
+        ...oldRowState,
+        value
+      }
+    });
+  };
+
+  columns = [
+    {
+      title: "Product Name",
+      dataIndex: "productName",
+      key: "productName"
+    },
+    {
+      title: "Unit Price",
+      dataIndex: "unitPrice",
+      key: "unitPrice"
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+      render: (text, record, index) => {
+        const rowState = this.state[index];
+        const isSelected = rowState && rowState.selected;
+        return (
+          <InputNumber
+            onClick={e => e.stopPropagation()}
+            onChange={value => {
+              this.handleChangeAmount(index, value);
+            }}
+            min={0}
+            value={(rowState && rowState.value) || 0}
+            style={{ width: 100, visibility: isSelected ? 'visible' : 'hidden' }}
+          />
+        );
+      }
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price"
+    }
+  ];
+
   render() {
     return (
       <Content>
@@ -101,8 +145,19 @@ class Products extends React.Component {
           <Table
             className="table"
             style={{ width: "75%", background: "#fff", padding: 8 }}
-            columns={columns}
+            columns={this.columns}
             dataSource={data}
+            rowClassName={(record, index) => {
+              const rowState = this.state[index];
+              return rowState && rowState.selected ? "selected" : "";
+            }}
+            onRow={(record, rowIndex) => {
+              return {
+                onClick: () => {
+                  this.handleSelectRow(rowIndex);
+                }
+              };
+            }}
           />
           <div className="view-cart" style={{ width: "20%" }}>
             <div style={{ marginTop: 15 }}>

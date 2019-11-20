@@ -15,7 +15,7 @@
     "redux": "^4.0.4"
   },
   "scripts": {
-    "start:api":"node GA_API/index.js", 
+    "start:api": "node GA_API/index.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -37,6 +37,7 @@
     ]
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.3",
     "eslint": "^6.6.0",
     "eslint-plugin-react": "^7.16.0"
   }

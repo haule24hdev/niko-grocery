@@ -31,3 +31,10 @@
 .input {
   width: 30px;
 }
+.ant-table-row {
+  &.selected {
+     td:not(:last-child) {
+      color: red;
+    }
+  }
+}
