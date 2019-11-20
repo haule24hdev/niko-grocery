@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   InputNumber,
   Input,
@@ -9,6 +9,7 @@ import {
   Layout
 } from "antd";
 import "antd/dist/antd.css";
+import client from "api/http-client";
 import "./product.scss";
 
 const { Search } = Input;
@@ -19,47 +20,14 @@ const { Text } = Typography;
 
 const { Content } = Layout;
 
-const data = [
-  {
-    key: "1",
-    productName: "Product Name 2",
-    unitPrice: 50,
-    amount: "100",
-    price: 5000
-  },
-  {
-    key: "2",
-    productName: "Product Name 1",
-    unitPrice: 13,
-    amount: "",
-    price: ""
-  },
-  {
-    key: "3",
-    productName: "Product Name 1",
-    unitPrice: 57,
-    amount: "",
-    price: ""
-  },
-  {
-    key: "4",
-    productName: "Product Name 1",
-    unitPrice: 90,
-    amount: "",
-    price: ""
-  },
-  {
-    key: "5",
-    productName: "Product Name 3",
-    unitPrice: 100,
-    amount: "80",
-    price: 8000
-  }
-];
+const ProductContainer = props => {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    client.get("/getAllProducts").then(({ data }) => setData(data));
+  }, []);
+  return <Products {...props} data={data} />;
+};
 
-function handleChange(value) {
-  console.log(`selected ${value}`);
-}
 class Products extends React.Component {
   state = {};
   handleSelectRow = index => {
@@ -85,8 +53,8 @@ class Products extends React.Component {
   columns = [
     {
       title: "Product Name",
-      dataIndex: "productName",
-      key: "productName"
+      dataIndex: "name",
+      key: "name"
     },
     {
       title: "Unit Price",
@@ -102,13 +70,18 @@ class Products extends React.Component {
         const isSelected = rowState && rowState.selected;
         return (
           <InputNumber
-            onClick={e => e.stopPropagation()}
+            onClick={e => {
+              e.stopPropagation();
+            }}
             onChange={value => {
               this.handleChangeAmount(index, value);
             }}
             min={0}
             value={(rowState && rowState.value) || 0}
-            style={{ width: 100, visibility: isSelected ? 'visible' : 'hidden' }}
+            style={{
+              width: 100,
+              visibility: isSelected ? "visible" : "hidden"
+            }}
           />
         );
       }
@@ -116,7 +89,7 @@ class Products extends React.Component {
     {
       title: "Price",
       dataIndex: "price",
-      key: "price"
+      key: "price",
     }
   ];
 
@@ -135,7 +108,7 @@ class Products extends React.Component {
             className="select"
             defaultValue="Select Language"
             style={{ width: 200 }}
-            onChange={handleChange}
+            // onChange={handleChange}
           >
             <Option value="en">English</Option>
             <Option value="ru">Russian</Option>
@@ -146,7 +119,7 @@ class Products extends React.Component {
             className="table"
             style={{ width: "75%", background: "#fff", padding: 8 }}
             columns={this.columns}
-            dataSource={data}
+            dataSource={this.props.data}
             rowClassName={(record, index) => {
               const rowState = this.state[index];
               return rowState && rowState.selected ? "selected" : "";
@@ -172,4 +145,4 @@ class Products extends React.Component {
   }
 }
 
-export default Products;
+export default ProductContainer;
