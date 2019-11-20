@@ -14,7 +14,7 @@ const AppRouter = () => (
       <Route exact path="/cart" component={Carts} />
       <Route exact path="/order-history" component={OrderHistory} />
       <Route exact path="/order/:id" component={OrderDetail} />
-      <Route exact path="/edit-food-details" component={EditableFormTable}/>
+      <Route exact path="/product" component={EditableFormTable}/>
     </Switch>
   </Router>
 );

@@ -1,268 +1,243 @@
-import React from "react";
-import { Link } from 'react-router-dom';
-import "./editFoodDetails.scss";
+import React, { useEffect, useState } from "react";
+import { InputNumber, Input, Table, Button, Layout } from "antd";
+import "antd/dist/antd.css";
+import client from "api/http-client";
 
-import {
-  Table,
-  Button,
-  Input,
-  InputNumber,
-  Popconfirm,
-  Form,
-  Row,
-  Col,
-  Icon
-} from "antd";
+const { Search } = Input;
 
-const data = [
-  {
-    key: "1",
-    productName: "Product Name 2",
-    unitPrice: 50,
-    edit: "",
-    remove: ""
-  },
-  {
-    key: "2",
-    productName: "Product Name 1",
-    unitPrice: 13,
-    edit: "",
-    remove: ""
-  },
-  {
-    key: "3",
-    productName: "Product Name 1",
-    unitPrice: 57,
-    edit: "",
-    remove: ""
-  },
-  {
-    key: "4",
-    productName: "Product Name 1",
-    unitPrice: 90,
-    edit: "",
-    remove: ""
-  },
-  {
-    key: "5",
-    productName: "Product Name 3",
-    unitPrice: 100,
-    edit: "",
-    remove: ""
-  }
-];
+const { Content } = Layout;
 
-const EditableContext = React.createContext();
+const ProductContainer = props => {
+  const [products, setProducts] = useState([]);
 
-class EditableCell extends React.Component {
-  getInput = () => {
-    if (this.props.inputType === "number") {
-      return <InputNumber />;
+  const fetchProducts = () => {
+    client.get("/product").then(({ data = [] }) =>
+      setProducts(
+        data.map(([name, unitPrice], index) => ({
+          name,
+          unitPrice,
+          no: index
+        }))
+      )
+    );
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleUpdateProduct = product => {
+    if (products.find(p => p.no == product.no)) {
+      client.post(`/product`, product).then(() => fetchProducts());
+      return;
     }
-    return <Input />;
-  };
-  
-  renderCell = ({ getFieldDecorator }) => {
-    const {
-      editing,
-      dataIndex,
-      title,
-      inputType,
-      record,
-      index,
-      children,
-      ...restProps
-    } = this.props;
-    return (
-      <td {...restProps}>
-        {editing ? (
-          <Form.Item style={{ margin: 0 }}>
-            {getFieldDecorator(dataIndex, {
-              rules: [
-                {
-                  required: true,
-                  message: `Please Input ${title}!`
-                }
-              ],
-              initialValue: record[dataIndex]
-            })(this.getInput())}
-          </Form.Item>
-        ) : (
-          children
-        )}
-      </td>
-    );
+    client.put(`/product/${product.no}`, product).then(() => fetchProducts());
   };
 
-  render() {
-    return (
-      <EditableContext.Consumer>{this.renderCell}</EditableContext.Consumer>
-    );
-  }
-}
+  const handleDeleteProduct = product => {
+    client.delete(`/product/${product.no}`).then(() => fetchProducts());
+  };
 
-class EditableTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { data, editingKey: "" };
-    this.columns = [
-      {
-        title: "productName",
-        dataIndex: "productName",
-        width: "25%",
-        editable: true
-      },
-      {
-        title: "unitPrice",
-        dataIndex: "unitPrice",
-        width: "15%",
-        editable: true
-      },
-      {
-        title: "edit",
-        dataIndex: "edit",
-        align: 'center',
-        render: (text, record) => {
-          const { editingKey } = this.state;
-          const editable = this.isEditing(record);
-          return editable ? (
-            <span>
-              <EditableContext.Consumer>
-                {form => (
-                  <Link
-                    onClick={() => this.save(form, record.key)}
-                    style={{ marginRight: 8 }}
-                  >
-                    Save
-                  </Link>
-                )}
-              </EditableContext.Consumer>
-              <Popconfirm
-                title="Sure to cancel?"
-                onConfirm={() => this.cancel(record.key)}
-              >
-                <Link>Cancel</Link>
-              </Popconfirm>
-            </span>
-          ) : (
-            <Link
-              disabled={editingKey !== ""}
-              onClick={() => this.edit(record.key)}
-            >
-              Edit
-            </Link>
+  const handleNewProduct = initalNewProduct => {
+    setProducts(oldProducts => {
+      return [...oldProducts, initalNewProduct];
+    });
+  };
+
+  return (
+    <Products
+      {...props}
+      data={products}
+      handleUpdateProduct={handleUpdateProduct}
+      handleDeleteProduct={handleDeleteProduct}
+      handleNewProduct={handleNewProduct}
+    />
+  );
+};
+
+class Products extends React.Component {
+  state = {};
+
+  handleSelectRow = record => {
+    const oldRowState = this.state[record.no] || {};
+    this.setState({
+      [record.no]: {
+        ...oldRowState,
+        editing: true,
+        name: record.name,
+        unitPrice: record.unitPrice | 0
+      }
+    });
+  };
+
+  handleDeSelectRow = no => {
+    const oldRowState = this.state[no] || {};
+    this.setState({
+      [no]: {
+        ...oldRowState,
+        editing: false
+      }
+    });
+  };
+  handleChange = (no, key, value) => {
+    const oldRowState = this.state[no] || {};
+    this.setState({
+      [no]: {
+        ...oldRowState,
+        [key]: value
+      }
+    });
+  };
+
+  columns = [
+    {
+      title: "Product Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => {
+        const rowState = this.state[record.no];
+        const editing = rowState && rowState.editing;
+        if (!editing) return text;
+        return (
+          <>
+            <Input
+              onChange={e => {
+                this.handleChange(record.no, "name", e.target.value);
+              }}
+              value={rowState.name}
+              style={{
+                width: 100
+              }}
+            />
+          </>
+        );
+      }
+    },
+    {
+      title: "Unit Price",
+      dataIndex: "unitPrice",
+      key: "unitPrice",
+      render: (text, record) => {
+        const rowState = this.state[record.no];
+        const editing = rowState && rowState.editing;
+        if (!editing) {
+          if (rowState && !rowState.unitPrice) {
+            return null;
+          }
+          return text;
+        }
+        return (
+          <>
+            <InputNumber
+              onChange={value => {
+                this.handleChange(record.no, "unitPrice", value);
+              }}
+              value={rowState.unitPrice}
+              min={0}
+              style={{
+                width: 100
+              }}
+            />
+          </>
+        );
+      }
+    },
+    {
+      title: "Edit",
+      dataIndex: "edit",
+      key: "edit",
+      render: (text, record) => {
+        const rowState = this.state[record.no];
+        if (rowState && rowState.editing) {
+          return (
+            <Button
+              icon="check"
+              onClick={() => {
+                this.props.handleUpdateProduct({
+                  no: record.no,
+                  productName: rowState.name,
+                  unitPrice: rowState.unitPrice
+                });
+                this.handleDeSelectRow(record.no);
+              }}
+            />
           );
         }
-      },
-      {
-        title: "remove",
-        dataIndex: "remove",
-        width: "40%",
-        // editable: true,
-        render: ()=> (<Icon type='delete' />),
-        align: 'center'
+        return (
+          <Button icon="edit" onClick={() => this.handleSelectRow(record)} />
+        );
       }
-    ];
-  }
+    },
+    {
+      title: "Remove",
+      dataIndex: "remove",
+      key: "remove",
+      render: (text, record) => {
+        return (
+          <Button
+            icon="delete"
+            onClick={() => this.props.handleDeleteProduct(record)}
+          />
+        );
+      }
+    }
+  ];
 
-  isEditing = record => record.key === this.state.editingKey;
-
-  cancel = () => {
-    this.setState({ editingKey: "" });
+  getTotal = () => {
+    return Object.keys(this.state).reduce((acc, key) => {
+      const rowState = this.state[key];
+      if (rowState && rowState.selected) {
+        return acc + rowState.price || 0;
+      }
+      return acc;
+    }, 0);
   };
 
-  save(form, key) {
-    form.validateFields((error, row) => {
-      if (error) {
-        return;
-      }
-      const newData = [...this.state.data];
-      const index = newData.findIndex(item => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row
-        });
-        this.setState({ data: newData, editingKey: "" });
-      } else {
-        newData.push(row);
-        this.setState({ data: newData, editingKey: "" });
-      }
-    });
-  }
-
-  edit(key) {
-    this.setState({ editingKey: key });
-  }
-
   render() {
-    const components = {
-      body: {
-        cell: EditableCell
-      }
-    };
-
-    const columns = this.columns.map(col => {
-      if (!col.editable) {
-        return col;
-      }
-      return {
-        ...col,
-        onCell: record => ({
-          record,
-          inputType: col.dataIndex === "age" ? "number" : "text",
-          dataIndex: col.dataIndex,
-          title: col.title,
-          editing: this.isEditing(record)
-        })
-      };
-    });
-
     return (
-      <EditableContext.Provider value={this.props.form}>
-        <Row gutter={12}>
-          <Col xs={24} sm={24} md={18}>
-            <Table
-              components={components}
-              bordered
-              dataSource={this.state.data}
-              columns={columns}
-              rowClassName="editable-row"
-              pagination={{
-                onChange: this.cancel
+      <Content>
+        <div>
+          <Search
+            className="search"
+            enterButton="Search"
+            size="large"
+            style={{ width: 500 }}
+            onSearch={value => console.log(value)}
+          />
+        </div>
+        <div className="list-menu">
+          <Table
+            rowKey={record => record.no}
+            className="table"
+            style={{ width: "75%", background: "#fff", padding: 8 }}
+            columns={this.columns}
+            dataSource={this.props.data}
+            rowClassName={record => {
+              const rowState = this.state[record.no];
+              return rowState && rowState.selected ? "selected" : "";
+            }}
+          />
+          <div className="view-cart" style={{ width: "20%" }}>
+            <Button
+              onClick={() => {
+                const initalNewProduct = {
+                  no: this.props.data.length,
+                  name: "",
+                  unitPrice: 1,
+                  isNew: true
+                };
+                this.props.handleNewProduct(initalNewProduct);
+                this.handleSelectRow(initalNewProduct);
               }}
-              style={{ width: "100%", padding: 12, background: '#fff' }}
-            />
-          </Col>
-          <Col
-            xs={24}
-            sm={24}
-            md={6}
-            style={{ padding: 8, background: "#fff" }}
-          >
-            <Row style={{ marginTop: 16, marginBottom: 16 }}>
-              <Col sm={12} push={6}>
-                <Button
-                  block
-                  style={{
-                    width: "100%",
-                    minWidth: 100,
-                    background: "#C4C4C4"
-                  }}
-                >
-                  Add New Product
-                </Button>
-              </Col>
-            </Row>
-            {/* </div> */}
-          </Col>
-        </Row>
-      </EditableContext.Provider>
+              className="button"
+            >
+              New Product
+            </Button>
+          </div>
+        </div>
+      </Content>
     );
   }
 }
 
-const EditableFormTable = Form.create()(EditableTable);
-
-export default EditableFormTable;
+export default ProductContainer;
