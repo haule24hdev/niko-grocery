@@ -52,7 +52,7 @@ const ProductContainer = props => {
   const handleFilter = text => {
     setProducts(oldProducts => {
       if (text === "") return defaultProducts;
-      return oldProducts.filter(p => p.productName.includes(text));
+      return oldProducts.filter(p => p.name[language].includes(text));
     });
   };
 
