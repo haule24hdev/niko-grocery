@@ -40,19 +40,17 @@ const OrderDetail = ({ location }) => {
 
   return (
     <Layout id="order-detail" style={{ marginTop: 12 }}>
-      <Layout.Content
-        style={{ background: "#fff", padding: 8, marginRight: 12 }}
-      >
+      <Layout.Content style={{ background: "#fff", marginRight: 12 }}>
         <Table
           columns={columns}
           dataSource={order.products}
-          style={{ background: "#fff" }}
+          style={{ background: "#fff", width: "100%" }}
           pagination={false}
         />
       </Layout.Content>
       <Layout.Sider
         style={{ background: "#fff", padding: 8, height: "fit-content" }}
-        width={230}
+        width={200}
       >
         <Row style={{ textAlign: "center" }}>
           Customer Name: {order.customerName}
@@ -70,7 +68,7 @@ const OrderDetail = ({ location }) => {
           <Select
             className="select"
             defaultValue={languages[0].code}
-            style={{ width: 200 }}
+            style={{ width: "100%" }}
             onChange={setLanguage}
           >
             {languages.map(({ code, label }) => (
@@ -84,7 +82,7 @@ const OrderDetail = ({ location }) => {
           <Button
             block
             style={{ width: "100%", minWidth: 100, background: "#C4C4C4" }}
-            onClick={() => {
+            onClick={async () => {
               window.print();
             }}
           >

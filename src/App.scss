@@ -1,0 +1,8 @@
+
+.app-layout {
+  @media print and (max-width: 768px) {
+    .dashboard {
+      display: none !important ;
+    }
+  }
+}

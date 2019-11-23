@@ -4,8 +4,6 @@ import "antd/dist/antd.css";
 import client from "api/http-client";
 import { languages } from "config";
 
-const { Content } = Layout;
-
 const ProductContainer = props => {
   const [products, setProducts] = useState([]);
 
@@ -260,42 +258,56 @@ class Products extends React.Component {
 
   render() {
     return (
-      <Content>
-        <div className="list-menu">
+      <Layout id="order-detail" style={{ marginTop: 12 }}>
+        <Layout.Content
+          style={{ background: "#fff", padding: 8, marginRight: 12 }}
+        >
           <Table
             rowKey={record => record.no}
             className="table"
-            style={{ width: "75%", background: "#fff", padding: 8 }}
+            style={{
+              width: "100%",
+              background: "#fff",
+              padding: 8,
+              overflowX: "auto"
+            }}
             columns={this.columns}
             dataSource={this.props.data}
             rowClassName={record => {
               const rowState = this.state[record.no];
               return rowState && rowState.selected ? "selected" : "";
             }}
+            pagination={false}
           />
-          <div className="view-cart" style={{ width: "20%" }}>
-            <Button
-              onClick={() => {
-                const initalNewProduct = {
-                  no: this.props.data.length,
-                  name: {
-                    r: "",
-                    c: "",
-                    k: ""
-                  },
-                  unitPrice: 1,
-                  isNew: true
-                };
-                this.props.handleNewProduct(initalNewProduct);
-                this.handleSelectRow(initalNewProduct);
-              }}
-              className="button"
-            >
-              New Product
-            </Button>
-          </div>
-        </div>
-      </Content>
+        </Layout.Content>
+        <Layout.Sider
+          style={{
+            background: "#fff",
+            padding: "24px 8px",
+            height: "fit-content"
+          }}
+          width={200}
+        >
+          <Button
+            onClick={() => {
+              const initalNewProduct = {
+                no: this.props.data.length,
+                name: languages.reduce((acc, l) => {
+                  acc[l.code] = "";
+                  return acc;
+                }, {}),
+                unitPrice: 1,
+                isNew: true
+              };
+              this.props.handleNewProduct(initalNewProduct);
+              this.handleSelectRow(initalNewProduct);
+            }}
+            className="button"
+          >
+            New Product
+          </Button>
+        </Layout.Sider>
+      </Layout>
     );
   }
 }

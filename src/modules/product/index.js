@@ -250,7 +250,7 @@ class Products extends React.Component {
               padding: "24px 8px",
               height: "fit-content"
             }}
-            width={230}
+            width={200}
           >
             <div style={{ marginTop: 15 }}>
               <Text style={{ fontSize: 16 }}>Total Price: </Text>
